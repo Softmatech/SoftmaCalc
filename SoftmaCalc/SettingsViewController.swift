@@ -42,7 +42,6 @@ class SettingsViewController: UIViewController {
         defaults.synchronize()
         print("defffff --->> ",defaults.integer(forKey: "mySel"))
     }
-    
 
     /*
     // MARK: - Navigation
