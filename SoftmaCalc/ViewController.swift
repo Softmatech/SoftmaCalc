@@ -13,6 +13,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var labelTwo: UILabel!
     @IBOutlet weak var seg: UISegmentedControl!
     @IBOutlet weak var labelThree: UILabel!
+    let defaults = UserDefaults.standard
+    var mySelect = 0;
     
     var labelNumber:Double = 0 // to take the number on screen
     var lastScreenString:String = "" // to take the last screen Number
@@ -22,7 +24,6 @@ class ViewController: UIViewController {
     var tipTotal:Double = 0
     
     @IBAction func ValuesChanged(_ sender: UISegmentedControl) {
-        print("------------------")
                 if seg.selectedSegmentIndex == 0 {
                     tipValue = 10
                     print("Option 1----",tipValue)
@@ -94,9 +95,12 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "SoftmaCalc"
+        mySelect = defaults.integer(forKey: "mySel")
         // Do any additional setup after loading the view, typically from a nib.
         zeroFunc() // to print the zero on screen at begining
         labelTwo.text = ""
+        seg.selectedSegmentIndex = mySelect
         ValuesChanged(seg)
     }
 
@@ -105,6 +109,27 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("view will appear")
+        // This is a good place to retrieve the default tip percentage from UserDefaults
+        // and use it to update the tip amount
+        mySelect = defaults.integer(forKey: "mySel")
+        seg.selectedSegmentIndex = mySelect
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        print("view will disappear")
+        mySelect = defaults.integer(forKey: "mySel")
+        seg.selectedSegmentIndex = mySelect
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("view did disappear")
+        mySelect = defaults.integer(forKey: "mySel")
+        seg.selectedSegmentIndex = mySelect
+    }
+    
 }
 
