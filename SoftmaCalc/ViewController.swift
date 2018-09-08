@@ -15,6 +15,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var labelThree: UILabel!
     let defaults = UserDefaults.standard
     var mySelect = 0;
+    var myCurrency:String! = ""
+    
     
     var labelNumber:Double = 0 // to take the number on screen
     var lastScreenString:String = "" // to take the last screen Number
@@ -22,86 +24,86 @@ class ViewController: UIViewController {
     var tipValue:Double = 0
     var Total:Double = 0
     var tipTotal:Double = 0
+    var lbl = "0"
     
     @IBAction func ValuesChanged(_ sender: UISegmentedControl) {
-                if seg.selectedSegmentIndex == 0 {
+                if seg.selectedSegmentIndex == 0 { //for the first segment selected
                     tipValue = 10
-                    print("Option 1----",tipValue)
                 }
-                else if seg.selectedSegmentIndex == 1 {
+                else if seg.selectedSegmentIndex == 1 {//for the second segment selected
                     tipValue = 20
-                    print("Option 2----",tipValue)
                 }
-                else if seg.selectedSegmentIndex == 2 {
+                else if seg.selectedSegmentIndex == 2 {//for the third segment selected
                     tipValue = 30
-                    print("Option 3----",tipValue)
                 }
-        tipCalculator(amount: labelNumber)
+        tipCalculator(amount: labelNumber) //function to calculate tip
     }
 
     func tipCalculator(amount:Double){
-        tipTotal = ((amount * tipValue)/100)
-        Total = amount + tipTotal
-        labelTwo.text = "Total = "+String(Total)+"$"
-        labelThree.text = "Tip = "+String(tipTotal)+"$"
+        tipTotal = ((amount * tipValue)/100) // calculate the total amount of tip
+        Total = amount + tipTotal // here is the total of amount + totaltip
+        labelTwo.text = "Total = "+String(Double(Total).formattedWithSeparator)+currencySign(currencyString: myCurrency)// asgin the total to the secong label in the screen
+        labelThree.text = "Tip = "+String(Double(tipTotal).formattedWithSeparator)+currencySign(currencyString: myCurrency)  //this for the total amount
     }
     
-    @IBAction func numbersAction(_ sender: UIButton) {
-
-            labelNumber = Double(label.text!)! //label number convert the label text
-            // the label receive the number pressed by the user and convert it
-            if sender.tag == 12
+    @IBAction func numbersAction(_ sender: UIButton) {// if the button (del or .) is pressed
+        
+        labelNumber = Double(lbl)! //label number convert the label text
+            // the label receive function button pressed (del or .) and take the right decision
+            if sender.tag == 12 //if the . button is pressed
             {
-                label.text = label.text! + "."
+                label.text = label.text! + "." //add . to the label
+                lbl = lbl + "."
             }
-            else if sender.tag != 11 || sender.tag != 12
+            else if sender.tag != 11 || sender.tag != 12 //if no verify the pressed button is different to(del or .)
                 {
-                    if label.text == "0"
+                    if label.text == "0"//if exist zero on the label (the principal screen)
                     {
-                        label.text = ""
+                        label.text = ""//set the label to null
+                        lbl = ""
                     }
-                label.text = label.text! + String(sender.tag - 1) //label take the number hited
-                labelNumber = Double(label.text!)! // convert the label string
+                label.text = Double(lbl + String(sender.tag - 1))?.formattedWithSeparator //label take the number hited
+                lbl = lbl + String(sender.tag - 1)
+                labelNumber = Double(lbl)! // convert the label string
                 }
-        tipCalculator(amount: labelNumber)
+        tipCalculator(amount: labelNumber)// tipcalculator function
+        print(lbl,"------------",String(sender.tag - 1))
     }
     
     @IBAction func setButton(_ sender: UIButton) {
-        lastScreenString = label.text!
-        if sender.tag == 11
+        lastScreenString = label.text! //this variable take the text displayed in the label
+        if sender.tag == 11 // if the del button is pressed
         {
-            let arrayCharacter = Array(lastScreenString)
-            print("char----",arrayCharacter)
-            for n in 0..<arrayCharacter.count - 1 {
-                print("nn----",n)
-                varDelete += String(arrayCharacter[n])
+            let arrayCharacter = Array(lastScreenString) // casting of the variable lasScreenString who take the  principal label content
+            for n in 0..<arrayCharacter.count - 1 { //here a bucle for
+                varDelete += String(arrayCharacter[n]) // assignement of array content minus the last
             }
-            print(varDelete)
-            label.text = varDelete
-            varDelete = ""
-            zeroFunc()
-            labelNumber = Double(label.text!)!
-            print("label-------",labelNumber)
-            tipCalculator(amount: labelNumber)
+            label.text = varDelete //asignement of label for the new value
+            varDelete = "" // assignemtn of null valor to this variable
+            labelNumber = Double(lbl)! //casting of the label content
+            tipCalculator(amount: labelNumber) //tipCalcultor
+            zeroFunc() // function to assign zero to the principal label if is null
+            
         }
     }
     
-    func zeroFunc(){
-        if (label.text?.isEmpty)!
+    func zeroFunc(){ //zero function
+        if (label.text?.isEmpty)!// if the label is null
         {
-            label.text = "0"
+            label.text = "0"// assign zero to it
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "SoftmaCalc"
-        mySelect = defaults.integer(forKey: "mySel")
+        self.title = "SoftmaCalc" //the title
+        mySelect = defaults.integer(forKey: "mySel") //read the variable stocked in the memory for the default tip percentage
+        myCurrency = defaults.string(forKey:"myCurrency")!//read the variable stocked in the memory for the default currency
+        tipCalculator(amount: labelNumber) //tipCalcultor
         // Do any additional setup after loading the view, typically from a nib.
         zeroFunc() // to print the zero on screen at begining
-        labelTwo.text = ""
-        seg.selectedSegmentIndex = mySelect
-        ValuesChanged(seg)
+        seg.selectedSegmentIndex = mySelect //assign the stored value for default tip
+        ValuesChanged(seg) //call the value change method to make the operation
     }
 
     override func didReceiveMemoryWarning() {
@@ -114,23 +116,53 @@ class ViewController: UIViewController {
         print("view will appear")
         // This is a good place to retrieve the default tip percentage from UserDefaults
         // and use it to update the tip amount
-        mySelect = defaults.integer(forKey: "mySel")
-        seg.selectedSegmentIndex = mySelect
+        mySelect = defaults.integer(forKey: "mySel")// read the saved default tip
+        myCurrency = defaults.string(forKey: "myCurrency")!//read the variable stocked in the memory for the default currency
+        tipCalculator(amount: labelNumber) //tipCalcultor
+        seg.selectedSegmentIndex = mySelect //set the segment to the default tip
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         print("view will disappear")
-        mySelect = defaults.integer(forKey: "mySel")
-        seg.selectedSegmentIndex = mySelect
+        mySelect = defaults.integer(forKey: "mySel") // read the saved default tip
+        myCurrency = defaults.string(forKey: "myCurrency")!//read the variable stocked in the memory for the default currency
+        tipCalculator(amount: labelNumber) //tipCalcultor
+        seg.selectedSegmentIndex = mySelect //set the segment to the default tip
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidAppear(animated)
         print("view did disappear")
-        mySelect = defaults.integer(forKey: "mySel")
-        seg.selectedSegmentIndex = mySelect
+        mySelect = defaults.integer(forKey: "mySel") // read the saved default tip
+        myCurrency = defaults.string(forKey: "myCurrency")!//read the variable stocked in the memory for the default currency
+        tipCalculator(amount: labelNumber) //tipCalcultor
+        seg.selectedSegmentIndex = mySelect //set the segment to the default tip
     }
     
-   
+    func currencySign(currencyString : String) -> String {
+        var cur = ""
+        
+        let arrayCharacter = Array(currencyString) // casting of the variable lasScreenString who take the  principal label content
+        if (arrayCharacter.count > 0){
+        for n in arrayCharacter.count - 1..<arrayCharacter.count { //here a bucle for
+            cur = String(arrayCharacter[n]) // assignement of array content minus the last
+        }
+        }
+        return cur
+    }
 }
 
+extension Formatter {
+    static let withSeparator: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.groupingSeparator = " "
+        formatter.numberStyle = .decimal
+        return formatter
+    }()
+}
+
+extension Double {
+    var formattedWithSeparator: String {
+        return Formatter.withSeparator.string(for: self) ?? ""
+    }
+}
