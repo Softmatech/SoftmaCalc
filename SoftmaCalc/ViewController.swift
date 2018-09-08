@@ -16,7 +16,7 @@ class ViewController: UIViewController {
     let defaults = UserDefaults.standard
     var mySelect = 0;
     var myCurrency:String! = ""
-    
+    var cc = ""
     
     var labelNumber:Double = 0 // to take the number on screen
     var lastScreenString:String = "" // to take the last screen Number
@@ -79,18 +79,33 @@ class ViewController: UIViewController {
                 varDelete += String(arrayCharacter[n]) // assignement of array content minus the last
             }
             label.text = varDelete //asignement of label for the new value
+            lbl = quitSpaceOnString(spaceString: varDelete)
             varDelete = "" // assignemtn of null valor to this variable
+            zeroFunc() // function to assign zero to the principal label if is null
             labelNumber = Double(lbl)! //casting of the label content
             tipCalculator(amount: labelNumber) //tipCalcultor
-            zeroFunc() // function to assign zero to the principal label if is null
-            
         }
     }
     
+    func quitSpaceOnString(spaceString : String) -> String {
+        var curString = ""
+        let arrayCharacter = Array(spaceString) // casting of the variable who take the  principal label content
+        if arrayCharacter.count > 0 {
+        for n in 0..<arrayCharacter.count - 1 { //here a bucle for
+            if(arrayCharacter[n] != Character(" ")){
+                curString += String(arrayCharacter[n]);
+            }
+        }
+        }
+        return curString
+    }
+    
+
     func zeroFunc(){ //zero function
-        if (label.text?.isEmpty)!// if the label is null
+        if ((label.text?.isEmpty)! || lbl.isEmpty)// if the label is null
         {
             label.text = "0"// assign zero to it
+            lbl = "0"
         }
     }
     
@@ -98,7 +113,12 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         self.title = "SoftmaCalc" //the title
         mySelect = defaults.integer(forKey: "mySel") //read the variable stocked in the memory for the default tip percentage
-        myCurrency = defaults.string(forKey:"myCurrency")!//read the variable stocked in the memory for the default currency
+        cc = defaults.string(forKey: "myCurrency") ?? "_"
+        if ( cc == "_") {
+            defaults.set("Haïti -- HT G", forKey: "myCurrency")
+            print("my..........",myCurrency)
+        }
+        myCurrency = defaults.string(forKey:"myCurrency") //read the variable stocked in the memory for the default currency
         tipCalculator(amount: labelNumber) //tipCalcultor
         // Do any additional setup after loading the view, typically from a nib.
         zeroFunc() // to print the zero on screen at begining
