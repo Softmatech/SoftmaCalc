@@ -12,7 +12,7 @@ class SettingsViewController: UIViewController, UIPickerViewDataSource, UIPicker
     @IBOutlet var segment: UISegmentedControl!
     @IBOutlet weak var pickerView: UIPickerView!
     let defaults = UserDefaults.standard
-    let currencyData = ["Haïti -- HT G","USA -- USD $","Europe -- EUR €","Canada -- CAD $","Dominican Republique -- DOP $","Hongkong -- HKD $","Brazil -- BRL $"]
+    let currencyData = ["Haïti-HT G","USA-USD $","Europe-EUR €","Canada-CAD $","Dominican Republic-DOP $","Hongkong-HKD $","Brazil-BRL $"]
     var segSel = 0
     var currencySelected = ""
     

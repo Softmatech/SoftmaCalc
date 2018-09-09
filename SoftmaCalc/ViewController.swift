@@ -67,7 +67,7 @@ class ViewController: UIViewController {
                 labelNumber = Double(lbl)! // convert the label string
                 }
         tipCalculator(amount: labelNumber)// tipcalculator function
-        print(lbl,"------------",String(sender.tag - 1))
+
     }
     
     @IBAction func setButton(_ sender: UIButton) {
@@ -78,21 +78,23 @@ class ViewController: UIViewController {
             for n in 0..<arrayCharacter.count - 1 { //here a bucle for
                 varDelete += String(arrayCharacter[n]) // assignement of array content minus the last
             }
+            print(varDelete)
             label.text = varDelete //asignement of label for the new value
-            lbl = quitSpaceOnString(spaceString: varDelete)
+            lbl = quitCommaOnString(numberString: varDelete)
             varDelete = "" // assignemtn of null valor to this variable
             zeroFunc() // function to assign zero to the principal label if is null
+            zeroLblFunc()
             labelNumber = Double(lbl)! //casting of the label content
             tipCalculator(amount: labelNumber) //tipCalcultor
         }
     }
     
-    func quitSpaceOnString(spaceString : String) -> String {
+    func quitCommaOnString(numberString : String) -> String {
         var curString = ""
-        let arrayCharacter = Array(spaceString) // casting of the variable who take the  principal label content
+        let arrayCharacter = Array(numberString) // casting of the variable who take the  principal label content
         if arrayCharacter.count > 0 {
         for n in 0..<arrayCharacter.count - 1 { //here a bucle for
-            if(arrayCharacter[n] != Character(" ")){
+            if(arrayCharacter[n] != Character(",")){
                 curString += String(arrayCharacter[n]);
             }
         }
@@ -102,10 +104,16 @@ class ViewController: UIViewController {
     
 
     func zeroFunc(){ //zero function
-        if ((label.text?.isEmpty)! || lbl.isEmpty)// if the label is null
+        if (label.text?.isEmpty)!// if the label is null
         {
             label.text = "0"// assign zero to it
-            lbl = "0"
+        }
+    }
+    
+    func zeroLblFunc(){ //zero function
+        if (lbl.isEmpty)// if the label is null
+        {
+            lbl = "0"// assign zero to it
         }
     }
     
@@ -115,8 +123,7 @@ class ViewController: UIViewController {
         mySelect = defaults.integer(forKey: "mySel") //read the variable stocked in the memory for the default tip percentage
         cc = defaults.string(forKey: "myCurrency") ?? "_"
         if ( cc == "_") {
-            defaults.set("Haïti -- HT G", forKey: "myCurrency")
-            print("my..........",myCurrency)
+            defaults.set("Haïti-HT G", forKey: "myCurrency")
         }
         myCurrency = defaults.string(forKey:"myCurrency") //read the variable stocked in the memory for the default currency
         tipCalculator(amount: labelNumber) //tipCalcultor
@@ -175,7 +182,7 @@ class ViewController: UIViewController {
 extension Formatter {
     static let withSeparator: NumberFormatter = {
         let formatter = NumberFormatter()
-        formatter.groupingSeparator = " "
+        formatter.groupingSeparator = ","
         formatter.numberStyle = .decimal
         return formatter
     }()
