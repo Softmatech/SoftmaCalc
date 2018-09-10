@@ -36,6 +36,15 @@ class ViewController: UIViewController {
                 else if seg.selectedSegmentIndex == 2 {//for the third segment selected
                     tipValue = 30
                 }
+        
+        self.label.alpha = 0
+        self.labelTwo.alpha = 0
+        UIView.animate(withDuration: 0.5, animations: {
+            self.label.alpha = 1
+            self.labelTwo.alpha = 1
+        }
+        )
+        
         tipCalculator(amount: labelNumber) //function to calculate tip
     }
 
@@ -119,6 +128,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.title = "SoftmaCalc" //the title
         mySelect = defaults.integer(forKey: "mySel") //read the variable stocked in the memory for the default tip percentage
         cc = defaults.string(forKey: "myCurrency") ?? "_"
